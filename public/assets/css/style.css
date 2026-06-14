@@ -1,0 +1,172 @@
+.auth-body {
+  background-color: #f5f5f5;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.auth-title {
+  color: #229799;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.auth-subtitle {
+  color: #424242;
+  font-size: 14px;
+  margin: 0;
+}
+
+.btn-auth {
+  background-color: #229799;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 10px;
+}
+
+.btn-auth:hover {
+  background-color: #1a7a7c;
+  color: white;
+}
+
+.auth-link {
+  color: #229799;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+
+/* =====================
+   SIDEBAR
+===================== */
+.sidebar {
+  background-color: #229799;
+  min-height: 100vh;
+  position: fixed;
+  width: 16.666%;
+}
+
+.sidebar-logo {
+  padding: 20px;
+}
+
+.sidebar .nav-link {
+  color: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  margin-bottom: 4px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255,255,255,0.15);
+  color: white;
+}
+
+.sidebar .nav-link.active {
+  background-color: white;
+  color: #229799;
+  font-weight: 600;
+}
+
+.sidebar-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+/* =====================
+ MAIN CONTENT
+===================== */
+.main-content {
+  margin-left: 16.666%;
+  padding: 30px;
+  background-color: #F5F5F5;
+  min-height: 100vh;
+}
+
+/* =====================
+ FILTER BUTTON
+===================== */
+.filter-btn {
+  border: 1.5px solid #229799;
+  color: #229799;
+  margin-right: 5px;
+  border-radius: 20px;
+  padding: 5px 16px;
+}
+
+.filter-btn.active {
+  background-color: #229799;
+  color: white;
+}
+
+.filter-btn:hover {
+  background-color: #229799;
+  color: white;
+}
+
+/* =====================
+   TABEL
+===================== */
+.table thead th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #424242;
+  border-bottom: 2px solid #48CFCB;
+}
+
+.table tbody td {
+  font-size: 13px;
+  color: #424242;
+  vertical-align: middle;
+}
+
+/* =====================
+ MODAL
+===================== */
+.modal-content {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+  padding: 20px 24px 0 24px;
+}
+
+.modal-body {
+  padding: 16px 24px 24px 24px;
+}
+
+/* =====================
+ FORM SELECT & INPUT
+===================== */
+.form-select:focus,
+.form-control:focus {
+  border-color: #48CFCB;
+  box-shadow: 0 0 0 0.2rem rgba(72, 207, 203, 0.25);
+}
+
+/* =====================
+ BADGE KATEGORI
+===================== */
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+}

@@ -23,6 +23,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/transaksi/hapus/(:num)', 'Transaksi::hapus/$1');
     $routes->get('/transaksi/edit/(:num)', 'Transaksi::edit/$1');
     $routes->post('/transaksi/update/(:num)', 'Transaksi::update/$1');
+    $routes->get('/rekap', 'Rekap::index');
     // Tambahkan route lain yang memerlukan autentikasi di sini
 });
 ?>

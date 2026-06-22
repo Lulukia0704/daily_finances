@@ -24,6 +24,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/transaksi/edit/(:num)', 'Transaksi::edit/$1');
     $routes->post('/transaksi/update/(:num)', 'Transaksi::update/$1');
     $routes->get('/rekap', 'Rekap::index');
+    $routes->get('/target', 'Target::index');
+    $routes->post('/target/simpan', 'Target::simpan');
+    $routes->get('/target/edit/(:num)', 'Target::edit/$1');
+    $routes->post('/target/update/(:num)', 'Target::update/$1'); 
+    $routes->get('/target/hapus/(:num)', 'Target::hapus/$1');
+    $routes->get('/target/goals', 'Target::getGoals');
     // Tambahkan route lain yang memerlukan autentikasi di sini
 });
 ?>

@@ -49,6 +49,12 @@ class Transaksi extends BaseController
         $kategoriData  = $kategoriModel->getAllKategoriByUser($user_id);
         $kategoriAktif = array_filter($kategoriData, fn($k) => $k['status'] == 'AKTIF');
 
+        $perPage = 20;
+        $page    = $this->request->getGet('page') ?? 1;
+        $total   = count($transaksi);
+        $offset  = ($page - 1) * $perPage;
+        $transaksi  = array_slice($transaksi, $offset, $perPage);
+
         $data = [
             'title'         => 'Transaksi',
             'activeMenu'    => 'transaksi',
@@ -59,7 +65,10 @@ class Transaksi extends BaseController
                 'tipe'     => $tipe,
                 'dari'     => $dari,
                 'sampai'   => $sampai,
-            ]
+            ],
+            'total'   => $total,
+            'page'    => $page,
+            'perPage' => $perPage,
         ];
 
         return view('transaksi/index', $data);
@@ -67,23 +76,40 @@ class Transaksi extends BaseController
 
     public function simpan()
     {
-    $user_id     = session()->get('user_id');
-    $kategori_id = $this->request->getPost('kategori_id');
+        $user_id     = session()->get('user_id');
+        $kategori_id = $this->request->getPost('kategori_id');
+        $keterangan  = $this->request->getPost('keterangan');
 
-    // Kalau kategori kosong (pemasukan) → set NULL
-    $kategori_id = !empty($kategori_id) ? $kategori_id : null;
+        // Kalau kategori kosong (pemasukan) → set NULL
+        $kategori_id = !empty($kategori_id) ? $kategori_id : null;
 
-    $transaksiModel = new TransaksiModel();
-    $transaksiModel->save([
-        'user_id'     => $user_id,
-        'tanggal'     => $this->request->getPost('tanggal'),
-        'kategori_id' => $kategori_id,
-        'keterangan'  => $this->request->getPost('keterangan'),
-        'jumlah'      => $this->request->getPost('jumlah'),
-        'tipe'        => $this->request->getPost('tipe'),
-    ]);
+        // Cek apakah kategori yang dipilih adalah 'Target'
+        $target_id = null;
+        if ($kategori_id) {
+            $db  = \Config\Database::connect();
+            $kat = $db->table('kategori')->where('id', $kategori_id)->get()->getRowArray();
+            if ($kat && $kat['nama'] === 'Target' && !empty($keterangan)) {
+                // Cari target berdasarkan nama_goal = keterangan
+                $target = $db->table('target')
+                    ->where('user_id', $user_id)
+                    ->where('nama_goal', $keterangan)
+                    ->get()->getRowArray();
+                if ($target) $target_id = $target['id'];
+            }
+        }
 
-    return redirect()->to(base_url('transaksi'))->with('sukses', 'Transaksi berhasil ditambahkan!');
+        $transaksiModel = new TransaksiModel();
+        $transaksiModel->save([
+            'user_id'     => $user_id,
+            'tanggal'     => $this->request->getPost('tanggal'),
+            'kategori_id' => $kategori_id,
+            'target_id'   => $target_id,
+            'keterangan'  => $keterangan,
+            'jumlah'      => $this->request->getPost('jumlah'),
+            'tipe'        => $this->request->getPost('tipe'),
+        ]);
+
+        return redirect()->to(base_url('transaksi'))->with('sukses', 'Transaksi berhasil ditambahkan!');
     }
 
     public function hapus($id)

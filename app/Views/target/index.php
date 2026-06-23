@@ -105,6 +105,23 @@
     </div>
 </div>
 
+<!-- PAGINATION -->
+<?php 
+$totalPage = ceil($total / $perPage);
+if ($totalPage > 1): ?>
+<nav class="mt-3">
+    <ul class="pagination">
+        <?php for ($i = 1; $i <= $totalPage; $i++): ?>
+        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+            <a class="page-link" href="<?= base_url('target') ?>?filter=<?= $filter ?>&page=<?= $i ?>">
+                <?= $i ?>
+            </a>
+        </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+<?php endif; ?>
+
 <!-- MODAL TAMBAH -->
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

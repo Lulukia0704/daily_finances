@@ -52,6 +52,12 @@ class Target extends BaseController
             $target = array_filter($target, fn($t) => 
                 stripos($t['nama_goal'], $search) !== false);
         }
+        
+        $perPage = 20;
+        $page    = $this->request->getGet('page') ?? 1;
+        $total   = count($target);
+        $offset  = ($page - 1) * $perPage;
+        $target  = array_slice($target, $offset, $perPage);
 
         $data = [
             'title'      => 'Target',
@@ -59,6 +65,9 @@ class Target extends BaseController
             'target'     => $target,
             'filter'     => $filter,
             'search'     => $search,
+            'total'   => $total,
+            'page'    => $page,
+            'perPage' => $perPage,
         ];
 
         return view('target/index', $data);

@@ -122,6 +122,23 @@
     </div>
 </div>
 
+<!-- PAGINATION -->
+<?php 
+$totalPage = ceil($total / $perPage);
+if ($totalPage > 1): ?>
+<nav class="mt-3">
+    <ul class="pagination">
+        <?php for ($i = 1; $i <= $totalPage; $i++): ?>
+        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+            <a class="page-link" href="<?= base_url('transaksi') ?>?page=<?= $i ?>">
+                <?= $i ?>
+            </a>
+        </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+<?php endif; ?>
+
 <!-- MODAL TAMBAH TRANSAKSI -->
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -152,8 +169,13 @@
 
                     <div class="mb-3">
                         <label class="form-label">Keterangan</label>
-                        <input type="text" name="keterangan" class="form-control" 
-                               placeholder="Contoh: Beli ayam">
+                        <!-- Input biasa -->
+                        <input type="text" id="inputKeterangan" name="keterangan" class="form-control" 
+                            placeholder="Contoh: Beli ayam">
+                        <!-- Dropdown goal (tersembunyi) -->
+                        <select id="dropdownGoal" name="keterangan" class="form-select d-none">
+                            <option value="">Pilih Goal...</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -212,6 +234,44 @@ document.querySelectorAll('input[name="tipe"]').forEach(radio => {
             kategoriSelect.setAttribute('required', 'required');
         }
     });
+});
+
+// Data kategori untuk cek nama 'Target'
+const kategoriData = <?= json_encode(array_values($kategoriAktif)) ?>;
+const kategoriSelect = document.querySelector('select[name="kategori_id"]');
+const inputKeterangan = document.getElementById('inputKeterangan');
+const dropdownGoal = document.getElementById('dropdownGoal');
+let goalsLoaded = false;
+
+// Load goals dari server
+async function loadGoals() {
+    if (goalsLoaded) return;
+    const res = await fetch('<?= base_url('target/goals') ?>');
+    const goals = await res.json();
+    goals.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.nama_goal;
+        opt.text = g.nama_goal;
+        dropdownGoal.appendChild(opt);
+    });
+    goalsLoaded = true;
+}
+
+// Cek apakah kategori yang dipilih adalah 'Target'
+kategoriSelect.addEventListener('change', function() {
+    const found = kategoriData.find(k => String(k.id) === String(this.value));
+    if (found && found.nama === 'Target') {
+        loadGoals();
+        dropdownGoal.classList.remove('d-none');
+        dropdownGoal.setAttribute('name', 'keterangan');
+        inputKeterangan.classList.add('d-none');
+        inputKeterangan.removeAttribute('name');
+    } else {
+        dropdownGoal.classList.add('d-none');
+        dropdownGoal.removeAttribute('name');
+        inputKeterangan.classList.remove('d-none');
+        inputKeterangan.setAttribute('name', 'keterangan');
+    }
 });
 </script>
 <?= $this->endSection() ?>

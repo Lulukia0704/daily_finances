@@ -13,6 +13,7 @@ class TransaksiModel extends Model
         'user_id',
         'tanggal',
         'kategori_id',
+        'target_id',
         'keterangan',
         'jumlah',
         'tipe'

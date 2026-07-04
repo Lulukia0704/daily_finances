@@ -30,6 +30,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('/target/update/(:num)', 'Target::update/$1'); 
     $routes->get('/target/hapus/(:num)', 'Target::hapus/$1');
     $routes->get('/target/goals', 'Target::getGoals');
+    $routes->get('/piutang', 'Piutang::index');
+    $routes->get('/setting', 'Setting::index');
+    $routes->post('/setting/ubah-nama', 'Setting::ubahNama');
+    $routes->post('/setting/ubah-email', 'Setting::ubahEmail');
+    $routes->post('/setting/ganti-password', 'Setting::gantiPassword');
+    $routes->post('/setting/hapus-data', 'Setting::hapusData');
     // Tambahkan route lain yang memerlukan autentikasi di sini
 });
 ?>

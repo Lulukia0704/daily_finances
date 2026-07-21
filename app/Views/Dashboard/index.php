@@ -41,7 +41,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Total Pengeluaran per Kategori</h6>
-                <canvas id="barChart" style="max-height:300px"></canvas>
+                <canvas id="barChart" style="max-height:200px"></canvas>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Komposisi Pengeluaran</h6>
-                <canvas id="pieChart" style="max-height:300px"></canvas>
+                <canvas id="pieChart" style="max-height:200px"></canvas>
             </div>
         </div>
     </div>
@@ -117,6 +117,7 @@ new Chart(barCtx, {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false, // 👈 DITAMBAHKAN: Paksa Bar Chart ikuti tinggi div pembungkus
         plugins: { legend: { display: false } }
     }
 });
@@ -134,7 +135,7 @@ new Chart(pieCtx, {
     },
     options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false, // 👈 DIUBAH: Dari true menjadi false agar tidak menggembung!
         plugins: { legend: { position: 'top' } }
     }
 });

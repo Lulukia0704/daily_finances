@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 
 <!-- HEADER -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <h4 class="mb-0 fw-bold" style="color:#229799">Transaksi</h4>
     <button class="btn btn-auth" data-bs-toggle="modal" data-bs-target="#modalTambah">
         <i class="bi bi-plus-lg me-1"></i> Tambah Transaksi
@@ -28,40 +28,37 @@
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-2">
         <form method="get" action="<?= base_url('transaksi') ?>">
-            <div class="row g-2 align-items-center">
-                <div class="col-md-2">
+            <!-- Menggunakan row-cols untuk fleksibilitas susunan grid filter di mobile -->
+            <div class="row g-2 align-items-center row-cols-1 row-cols-sm-2 row-cols-md-auto">
+                <div class="col">
                     <select name="kategori" class="form-select form-select-sm">
-                    <option value="">Semua Kategori</option>
-                    <?php foreach ($kategoriAktif as $k): ?>
-                        <option value="<?= $k['id'] ?>"
-                            <?= $filter['kategori'] == $k['id'] ? 'selected' : '' ?>>
-                            <?= $k['nama'] ?>
-                        </option>
+                        <option value="">Semua Kategori</option>
+                        <?php foreach ($kategoriAktif as $k): ?>
+                            <option value="<?= $k['id'] ?>" <?= $filter['kategori'] == $k['id'] ? 'selected' : '' ?>>
+                                <?= $k['nama'] ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                     <select name="tipe" class="form-select form-select-sm">
                         <option value="">Semua Tipe</option>
                         <option value="Pemasukan" <?= $filter['tipe'] == 'Pemasukan' ? 'selected' : '' ?>>Pemasukan</option>
                         <option value="Pengeluaran" <?= $filter['tipe'] == 'Pengeluaran' ? 'selected' : '' ?>>Pengeluaran</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                <input type="date" name="dari" class="form-control form-control-sm" 
-                        value="<?= $filter['dari'] ?>">
-
+                <div class="col">
+                    <input type="date" name="dari" class="form-control form-control-sm" value="<?= $filter['dari'] ?>">
                 </div>
-                <div class="col-auto">
+                <div class="col-auto text-center d-none d-md-block">
                     <span class="text-muted">s/d</span>
                 </div>
-                <div class="col-md-2">
-                <input type="date" name="sampai" class="form-control form-control-sm"
-                        value="<?= $filter['sampai'] ?>">
+                <div class="col">
+                    <input type="date" name="sampai" class="form-control form-control-sm" value="<?= $filter['sampai'] ?>">
                 </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-sm btn-auth">Cari</button>
-                    <a href="<?= base_url('transaksi') ?>" class="btn btn-sm btn-outline-secondary">Reset</a>
+                <div class="col d-flex gap-1 w-100 w-sm-auto justify-content-end mt-2 mt-sm-0">
+                    <button type="submit" class="btn btn-sm btn-auth flex-fill flex-sm-none">Cari</button>
+                    <a href="<?= base_url('transaksi') ?>" class="btn btn-sm btn-outline-secondary flex-fill flex-sm-none text-center">Reset</a>
                 </div>
             </div>
         </form>
@@ -70,17 +67,18 @@
 
 <!-- TABEL -->
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <!-- table-responsive ditambahkan agar aman di-scroll internal di HP -->
+    <div class="card-body p-0 table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Kategori</th>
-                    <th>Keterangan</th>
-                    <th class="text-end">Pemasukan</th>
-                    <th class="text-end">Pengeluaran</th>
-                    <th class="text-end">Aksi</th>
+                    <th style="width: 5%">No</th>
+                    <th style="min-width: 100px;">Tanggal</th>
+                    <th style="min-width: 110px;">Kategori</th>
+                    <th style="min-width: 180px;">Keterangan</th>
+                    <th class="text-end" style="min-width: 120px;">Pemasukan</th>
+                    <th class="text-end" style="min-width: 120px;">Pengeluaran</th>
+                    <th class="text-center" style="width: 10%">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -94,25 +92,25 @@
                     <?php $no = 1; foreach ($transaksi as $t): ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= date('d/m/Y', strtotime($t['tanggal'])) ?></td>
+                        <td class="text-nowrap"><?= date('d/m/Y', strtotime($t['tanggal'])) ?></td>
                         <td><span class="badge bg-secondary"><?= $t['kategori_nama'] ?></span></td>
                         <td><?= $t['keterangan'] ?></td>
-                        <td class="text-end text-success">
+                        <td class="text-end text-success text-nowrap">
                             <?= $t['tipe'] == 'Pemasukan' ? 'Rp ' . number_format($t['jumlah'], 0, ',', '.') : '-' ?>
                         </td>
-                        <td class="text-end text-danger">
+                        <td class="text-end text-danger text-nowrap">
                             <?= $t['tipe'] == 'Pengeluaran' ? 'Rp ' . number_format($t['jumlah'], 0, ',', '.') : '-' ?>
                         </td>
-                        <td class="text-end">
-                        <a href="<?= base_url('transaksi/edit/' . $t['id']) ?>"
-                            class="btn btn-sm btn-outline-primary me-1">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="<?= base_url('transaksi/hapus/' . $t['id']) ?>"
-                            class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                        <!-- Penguncian tombol aksi agar posisinya selalu sejajar lurus kesamping -->
+                        <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+                            <div class="d-inline-flex gap-1">
+                                <a href="<?= base_url('transaksi/edit/' . $t['id']) ?>" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="<?= base_url('transaksi/hapus/' . $t['id']) ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -127,7 +125,7 @@
 $totalPage = ceil($total / $perPage);
 if ($totalPage > 1): ?>
 <nav class="mt-3">
-    <ul class="pagination">
+    <ul class="pagination flex-wrap">
         <?php for ($i = 1; $i <= $totalPage; $i++): ?>
         <li class="page-item <?= $i == $page ? 'active' : '' ?>">
             <a class="page-link" href="<?= base_url('transaksi') ?>?page=<?= $i ?>">
@@ -153,8 +151,7 @@ if ($totalPage > 1): ?>
 
                     <div class="mb-3">
                         <label class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" 
-                               value="<?= date('Y-m-d') ?>" required>
+                        <input type="date" name="tanggal" class="form-control" value="<?= date('Y-m-d') ?>" required>
                     </div>
 
                     <div class="mb-3" id="fieldKategori">
@@ -169,10 +166,7 @@ if ($totalPage > 1): ?>
 
                     <div class="mb-3">
                         <label class="form-label">Keterangan</label>
-                        <!-- Input biasa -->
-                        <input type="text" id="inputKeterangan" name="keterangan" class="form-control" 
-                            placeholder="Contoh: Beli ayam">
-                        <!-- Dropdown goal (tersembunyi) -->
+                        <input type="text" id="inputKeterangan" name="keterangan" class="form-control" placeholder="Contoh: Beli ayam">
                         <select id="dropdownGoal" name="keterangan" class="form-select d-none">
                             <option value="">Pilih Goal...</option>
                         </select>
@@ -182,8 +176,7 @@ if ($totalPage > 1): ?>
                         <label class="form-label">Jumlah</label>
                         <div class="input-group">
                             <span class="input-group-text">Rp</span>
-                            <input type="number" name="jumlah" class="form-control" 
-                                   placeholder="0" required>
+                            <input type="number" name="jumlah" class="form-control" placeholder="0" required>
                         </div>
                     </div>
 
@@ -191,15 +184,13 @@ if ($totalPage > 1): ?>
                         <label class="form-label">Tipe</label>
                         <div class="d-flex gap-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" 
-                                       name="tipe" value="Pemasukan" id="pemasukan">
+                                <input class="form-check-input" type="radio" name="tipe" value="Pemasukan" id="pemasukan">
                                 <label class="form-check-label text-success" for="pemasukan">
                                     📈 Pemasukan
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" 
-                                       name="tipe" value="Pengeluaran" id="pengeluaran" checked>
+                                <input class="form-check-input" type="radio" name="tipe" value="Pengeluaran" id="pengeluaran" checked>
                                 <label class="form-check-label text-danger" for="pengeluaran">
                                     📉 Pengeluaran
                                 </label>
@@ -209,8 +200,7 @@ if ($totalPage > 1): ?>
 
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-auth">Simpan</button>
-                        <button type="button" class="btn btn-outline-secondary" 
-                                data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     </div>
 
                 </form>
@@ -218,8 +208,8 @@ if ($totalPage > 1): ?>
         </div>
     </div>
 </div>
+
 <script>
-// Sembunyikan/tampilkan kategori berdasarkan tipe
 document.querySelectorAll('input[name="tipe"]').forEach(radio => {
     radio.addEventListener('change', function() {
         const kategoriField = document.getElementById('fieldKategori');
@@ -236,14 +226,12 @@ document.querySelectorAll('input[name="tipe"]').forEach(radio => {
     });
 });
 
-// Data kategori untuk cek nama 'Target'
 const kategoriData = <?= json_encode(array_values($kategoriAktif)) ?>;
 const kategoriSelect = document.querySelector('select[name="kategori_id"]');
 const inputKeterangan = document.getElementById('inputKeterangan');
 const dropdownGoal = document.getElementById('dropdownGoal');
 let goalsLoaded = false;
 
-// Load goals dari server
 async function loadGoals() {
     if (goalsLoaded) return;
     const res = await fetch('<?= base_url('target/goals') ?>');
@@ -257,7 +245,6 @@ async function loadGoals() {
     goalsLoaded = true;
 }
 
-// Cek apakah kategori yang dipilih adalah 'Target'
 kategoriSelect.addEventListener('change', function() {
     const found = kategoriData.find(k => String(k.id) === String(this.value));
     if (found && found.nama === 'Target') {

@@ -1,5 +1,5 @@
-<?php $this ->extend('layouts/main') ?>
-<?php $this ->section('content') ?>
+<?php $this->extend('layouts/main') ?>
+<?php $this->section('content') ?>
 
 <!-- HEADER -->
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,7 +22,7 @@
 <?php endif; ?>
 
 <!-- FILTER -->
-<div class="mb-3">
+<div class="mb-3 d-flex flex-wrap gap-1">
     <button class="btn btn-sm filter-btn active" data-filter="semua">Semua</button>
     <button class="btn btn-sm filter-btn" data-filter="aktif">Aktif</button>
     <button class="btn btn-sm filter-btn" data-filter="nonaktif">Nonaktif</button>
@@ -30,16 +30,17 @@
 
 <!-- TABEL -->
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <!-- table-responsive agar background web abu-abu tidak terpotong putih saat di-scroll -->
+    <div class="card-body p-0 table-responsive">
         <table class="table table-hover mb-0" id="tabelKategori">
             <thead class="table-light">
                 <tr>
-                    <th>No</th>
+                    <th style="width: 5%">No</th>
                     <th>Nama Kategori</th>
                     <th>Jenis</th>
                     <th>Anggaran Bulanan</th>
                     <th>Status</th>
-                    <th>Aksi</th>
+                    <th class="text-center" style="width: 15%">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,7 +64,7 @@
                                 <span class="badge bg-success"><?= $k['jenis'] ?></span>
                             <?php endif; ?>
                         </td>
-                        <td>
+                        <td class="text-nowrap">
                             <?= $k['anggaran_bulanan'] > 0 
                                 ? 'Rp ' . number_format($k['anggaran_bulanan'], 0, ',', '.') 
                                 : '<span class="text-muted">-</span>' ?>
@@ -75,15 +76,18 @@
                                 <span class="badge bg-secondary">Nonaktif</span>
                             <?php endif; ?>
                         </td>
-                        <td>
-                            <a href="<?= base_url('kategori/edit/' . $k['id']) ?>" 
-                               class="btn btn-sm btn-outline-primary me-1">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="<?= base_url('kategori/toggle/' . $k['id']) ?>" 
-                               class="btn btn-sm <?= $k['status'] == 'AKTIF' ? 'btn-outline-danger' : 'btn-outline-success' ?>">
-                                <i class="bi bi-<?= $k['status'] == 'AKTIF' ? 'x-circle' : 'check-circle' ?>"></i>
-                            </a>
+                        <!-- Memaksa tombol aksi sejajar menyamping -->
+                        <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+                            <div class="d-inline-flex gap-1">
+                                <a href="<?= base_url('kategori/edit/' . $k['id']) ?>" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="<?= base_url('kategori/toggle/' . $k['id']) ?>" 
+                                   class="btn btn-sm <?= $k['status'] == 'AKTIF' ? 'btn-outline-danger' : 'btn-outline-success' ?>">
+                                    <i class="bi bi-<?= $k['status'] == 'AKTIF' ? 'x-circle' : 'check-circle' ?>"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>

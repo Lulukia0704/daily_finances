@@ -170,3 +170,204 @@
   padding: 4px 8px;
   border-radius: 6px;
 }
+
+/* ==========================================================================
+   PONDASI UTAMA & WARNA HAMBURGER MENU (JANGAN DIUBAH)
+   ========================================================================== */
+
+/* Tombol hamburger melayang di pojok kiri atas (HP/Tablet) */
+.hamburger-trigger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1050; 
+    background-color: #229799; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: none; /* Sembunyikan default di monitor besar */
+    box-shadow: 0 4px 12px rgba(34, 151, 153, 0.3);
+    transition: all 0.2s ease;
+}
+
+.hamburger-trigger:hover {
+    background-color: #1b7a7c;
+}
+
+/* Style Laci Menu Hamburger Mobile */
+.mobile-sidebar-bg {
+    background-color: #229799 !important; /* Warna hijau toska aslimu */
+    border: none !important;
+    width: 280px; 
+}
+
+.mobile-sidebar-bg .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.mobile-sidebar-bg .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+}
+
+.mobile-sidebar-bg .nav-link.active {
+    background-color: white !important;
+    color: #229799 !important;
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   1. PENATAAN OTOMATIS UNTUK MONITOR DESKTOP BESAR (Lebar layar >= 1200px)
+   ========================================================================== */
+@media (min-width: 1200px) {
+    html, body {
+        font-size: 16px; 
+    }
+    
+    .main-content {
+        padding: 35px 40px !important; 
+    }
+
+    .card {
+        border-radius: 12px !important; 
+    }
+
+    .card-body {
+        padding: 24px !important; 
+    }
+}
+
+
+/* ==========================================================================
+   2. PENATAAN UNTUK MONITOR SEDANG / TABLET (Lebar layar 768px - 1199px)
+   ========================================================================== */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    html, body {
+        font-size: 14.5px !important; 
+    }
+    
+    .main-content {
+        padding: 25px !important; 
+    }
+
+    .card-body {
+        padding: 18px !important; 
+    }
+
+    .chart-container {
+        min-height: 280px;
+    }
+
+    .mobile-sidebar-bg .nav-link {
+        font-size: 13px !important;
+    }
+    
+    .mobile-sidebar-bg #mobileSidebarLabel {
+        font-size: 1rem !important; 
+    }
+}
+
+
+/* ==========================================================================
+   3. PENATAAN UNTUK MONITOR KECIL / MOBILE / HP (Lebar layar < 768px)
+   ========================================================================== */
+@media (max-width: 767.98px) {
+    /* --- A. UKURAN TEKS GLOBAL DI HP --- */
+    html, body {
+        font-size: 13px !important; 
+    }
+    
+    h1, .h1 { font-size: 1.5rem !important; }
+    h2, .h2 { font-size: 1.35rem !important; }
+    h3, .h3 { font-size: 1.2rem !important; }
+    h4, .h4 { font-size: 1.1rem !important; } 
+    h5, .h5 { font-size: 1.0rem !important; }
+    h6, .h6 { font-size: 0.9rem !important; }
+    
+    p, span, label, input, select, textarea {
+        font-size: 0.85rem !important;
+    }
+
+    /* --- B. UKURAN OBJEK (CONTAINER & CARD) DI HP --- */
+    .main-content {
+        padding: 15px 12px !important; 
+        margin-left: 0 !important;
+        padding-top: 70px !important; 
+    }
+
+    .card {
+        margin-bottom: 10px !important;
+        border-radius: 8px !important; 
+    }
+    
+    .card-body {
+        padding: 12px 14px !important; 
+    }
+
+    /* --- C. UKURAN TOMBOL & FILTER DI HP --- */
+    .btn {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important; 
+    }
+    
+    .btn-group-sm > .btn, .btn-sm {
+        padding: 4px 6px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* --- D. UKURAN GRAFIK & TABEL DI HP --- */
+    .chart-container {
+        min-height: 220px !important; 
+    }
+
+    table, .table {
+        font-size: 0.78rem !important; 
+    }
+
+    /* --- E. ADJUSTMENT STRUKTUR MENU HAMBURGER DI HP --- */
+    .hamburger-trigger {
+        display: block;
+    }
+    
+    .hamburger-trigger i {
+        font-size: 1.2rem !important;
+    }
+
+    .sidebar {
+        display: none !important;
+    }
+
+    .mobile-sidebar-bg {
+        width: 80% !important; 
+        max-width: 300px;      
+    }
+
+    .mobile-sidebar-bg .offcanvas-header {
+        padding-left: 65px !important; 
+    }
+
+    .mobile-sidebar-bg #mobileSidebarLabel {
+        font-size: 0.9rem !important; 
+        letter-spacing: 0.3px;
+        white-space: nowrap; 
+    }
+
+    .mobile-sidebar-bg .user-greeting {
+        font-size: 0.78rem !important; 
+    }
+
+    .mobile-sidebar-bg .nav-link {
+        font-size: 12.5px !important; 
+        padding: 8px 10px;
+    }
+}

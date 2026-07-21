@@ -97,16 +97,17 @@
         <p class="text-muted small">Pilih data dan format yang ingin diexport.</p>
         <form action="<?= base_url('setting/export') ?>" method="post">
             <?= csrf_field() ?>
+            
             <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                    <label class="form-label">Data</label>
-                    <select name="data" class="form-select">
-                        <option value="transaksi">Transaksi</option>
-                        <option value="rekap">Rekap Bulanan</option>
-                        <option value="target">Target</option>
-                    </select>
+                <!-- 1. PILIHAN DATA (Teks Statis dengan Input Hidden agar data tetap terkirim ke backend) -->
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold">Data yang Diexport</label>
+                    <input type="hidden" name="data" value="rekap">
+                    <div class="form-control bg-light text-muted">📄 Rekap Bulanan</div>
                 </div>
-                <div class="col-md-6">
+
+                <!-- 2. PILIHAN FORMAT FILE -->
+                <div class="col-12 col-md-6">
                     <label class="form-label">Format</label>
                     <select name="format" class="form-select">
                         <option value="pdf">PDF</option>
@@ -114,7 +115,45 @@
                         <option value="word">Word</option>
                     </select>
                 </div>
+
+                <!-- 3. PERIODE: DROPDOWN BULAN & TAHUN (Berdampingan secara responsif) -->
+                <div class="col-12">
+                    <label class="form-label">Periode</label>
+                    <div class="row g-2">
+                        <!-- Dropdown Bulan -->
+                        <div class="col-6">
+                            <select name="bulan" class="form-select">
+                                <option value="all">Semua Bulan</option>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <!-- Dropdown Tahun -->
+                        <div class="col-6">
+                            <select name="tahun" class="form-select">
+                                <!-- Opsi dinamis: Menampilkan tahun saat ini sampai beberapa tahun ke belakang -->
+                                <?php 
+                                $tahun_sekarang = date('Y');
+                                for ($i = $tahun_sekarang; $i >= $tahun_sekarang - 5; $i--): 
+                                ?>
+                                    <option value="<?= $i ?>"><?= $i ?></option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-auth">
                     <i class="bi bi-download me-1"></i> Export

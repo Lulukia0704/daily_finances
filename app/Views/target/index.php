@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <!-- HEADER -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <h4 class="mb-0 fw-bold" style="color:#229799">Target</h4>
     <button class="btn btn-auth" data-bs-toggle="modal" data-bs-target="#modalTambah">
         <i class="bi bi-plus-lg me-1"></i> Tambah Goal
@@ -24,7 +24,7 @@
 <?php endif; ?>
 
 <!-- FILTER -->
-<div class="mb-3">
+<div class="mb-3 d-flex flex-wrap gap-1">
     <button class="btn btn-sm filter-btn <?= !$filter ? 'active' : '' ?>" 
             onclick="window.location='<?= base_url('target') ?>'">Semua</button>
     <button class="btn btn-sm filter-btn <?= $filter == 'tercapai' ? 'active' : '' ?>"
@@ -35,18 +35,19 @@
 
 <!-- TABEL -->
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <!-- table-responsive ditambahkan di sini agar aman di-scroll tanpa merusak background utama -->
+    <div class="card-body p-0 table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
                     <th style="width:40px">No</th>
-                    <th style="width:200px" >Nama Target</th>
-                    <th class="text-end" style="width:150px">Target Nominal</th>
-                    <th class="text-end" style="width:150px">Sudah Terkumpul</th>
-                    <th class="text-end" style="width:120px">Sisa</th>
-                    <th style="width:120px">Target Selesai</th>
-                    <th style="width:100px">Status</th>
-                    <th style="width:90px">Aksi</th>
+                    <th style="min-width:180px">Nama Target</th>
+                    <th class="text-end" style="min-width:130px">Target Nominal</th>
+                    <th class="text-end" style="min-width:130px">Sudah Terkumpul</th>
+                    <th class="text-end" style="min-width:110px">Sisa</th>
+                    <th style="min-width:120px">Target Selesai</th>
+                    <th style="min-width:100px">Status</th>
+                    <th class="text-center" style="width:90px">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,13 +62,13 @@
                     <tr>
                         <td><?= $no++ ?></td>
                         <td><?= $t['nama_goal'] ?></td>
-                        <td class="text-end text-success">
+                        <td class="text-end text-success text-nowrap">
                             Rp <?= number_format($t['target_nominal'], 0, ',', '.') ?>
                         </td>
-                        <td class="text-end">
+                        <td class="text-end text-nowrap">
                             Rp <?= number_format($t['sudah_terkumpul'], 0, ',', '.') ?>
                         </td>
-                        <td class="text-end text-danger">
+                        <td class="text-end text-danger text-nowrap">
                             Rp <?= number_format($t['sisa'], 0, ',', '.') ?>
                         </td>
                         <td class="text-nowrap">
@@ -86,16 +87,19 @@
                                 <span class="badge bg-secondary">Berjalan</span>
                             <?php endif; ?>
                         </td>
-                        <td class="text-nowrap">
-                            <a href="<?= base_url('target/edit/' . $t['id']) ?>" 
-                               class="btn btn-sm btn-outline-primary me-1">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="<?= base_url('target/hapus/' . $t['id']) ?>" 
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('Yakin ingin menghapus?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                        <!-- Penguncian baris tombol aksi agar selalu sejajar lurus kesamping -->
+                        <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
+                            <div class="d-inline-flex gap-1">
+                                <a href="<?= base_url('target/edit/' . $t['id']) ?>" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="<?= base_url('target/hapus/' . $t['id']) ?>" 
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Yakin ingin menghapus?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -110,7 +114,7 @@
 $totalPage = ceil($total / $perPage);
 if ($totalPage > 1): ?>
 <nav class="mt-3">
-    <ul class="pagination">
+    <ul class="pagination flex-wrap">
         <?php for ($i = 1; $i <= $totalPage; $i++): ?>
         <li class="page-item <?= $i == $page ? 'active' : '' ?>">
             <a class="page-link" href="<?= base_url('target') ?>?filter=<?= $filter ?>&page=<?= $i ?>">

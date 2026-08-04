@@ -27,7 +27,15 @@ class Transaksi extends BaseController
 
         // Terapkan filter
         if (!empty($kategori)) {
-            $builder->where('t.kategori_id', $kategori);
+            if ($kategori == 'piutang_masuk') {
+                $builder->like('t.keterangan', 'Piutang')
+                        ->where('t.tipe', 'PEMASUKAN');
+            } elseif ($kategori == 'piutang_keluar') {
+                $builder->like('t.keterangan', 'Piutang')
+                        ->where('t.tipe', 'PENGELUARAN');
+            } else {
+                $builder->where('t.kategori_id', $kategori);
+            }
         }
         if (!empty($tipe)) {
             $builder->where('t.tipe', $tipe);

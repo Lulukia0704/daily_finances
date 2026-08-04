@@ -38,6 +38,9 @@
                                 <?= $k['nama'] ?>
                             </option>
                         <?php endforeach; ?>
+
+                        <option value="piutang_masuk"<?= $filter['kategori'] == 'piutang_masuk' ? 'selected' : ''?>> Piutang Masuk </option>
+                        <option value="piutang_keluar"<?= $filter['kategori'] == 'piutang_keluar' ? 'selected' : ''?>> Piutang Keluar </option>
                     </select>
                 </div>
                 <div class="col">
@@ -50,13 +53,14 @@
                 <div class="col">
                     <input type="date" name="dari" class="form-control form-control-sm" value="<?= $filter['dari'] ?>">
                 </div>
-                <div class="col-auto text-center d-none d-md-block">
+
+                <div class="col-auto text-center d-none d-sm-block">
                     <span class="text-muted">s/d</span>
                 </div>
                 <div class="col">
                     <input type="date" name="sampai" class="form-control form-control-sm" value="<?= $filter['sampai'] ?>">
                 </div>
-                <div class="col d-flex gap-1 w-100 w-sm-auto justify-content-end mt-2 mt-sm-0">
+                <div class="col-md-auto ms-md-auto d-flex gap-1 justify-content-end mt-2 mt-md-0">
                     <button type="submit" class="btn btn-sm btn-auth flex-fill flex-sm-none">Cari</button>
                     <a href="<?= base_url('transaksi') ?>" class="btn btn-sm btn-outline-secondary flex-fill flex-sm-none text-center">Reset</a>
                 </div>

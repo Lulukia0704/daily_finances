@@ -88,7 +88,36 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">🎯 Target Tabungan</h6>
-                <p class="text-muted">Belum ada target.</p>
+                <?php if (empty($targetBelumTercapai)): ?>
+                    <p class="text-muted mb-0">Belum ada target.</p>
+                <?php else: ?>
+                    <ul class="list-unstyled mb-2">
+                        <?php foreach ($targetBelumTercapai as $t): ?>
+                            <?php
+                                $sisa = $t['target_nominal'] - $t['sudah_terkumpul'];
+                                $isOverdue = !empty($t['target_selesai']) && strtotime($t['target_selesai']) < strtotime(date('Y-m-d'));
+                                $isSoon = !empty($t['target_selesai']) && !$isOverdue
+                                    && strtotime($t['target_selesai']) <= strtotime('+30 days');
+                            ?>
+                            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <span>
+                                    <?= $t['nama_goal'] ?>
+                                    <?php if ($isOverdue): ?>
+                                        <span class="badge bg-danger ms-1">Terlambat</span>
+                                    <?php elseif ($isSoon): ?>
+                                        <span class="badge bg-warning text-dark ms-1">Segera</span>
+                                    <?php endif; ?>
+                                </span>
+                                <span class="text-danger fw-semibold text-nowrap">
+                                    Rp <?= number_format($sisa, 0, ',', '.') ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php if ($targetTotal > 5): ?>
+                        <a href="<?= base_url('target') ?>" class="small">Lihat semua (<?= $targetTotal ?>) →</a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -96,7 +125,23 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">🤝 Piutang Belum Lunas</h6>
-                <p class="text-muted">Belum ada piutang.</p>
+                <?php if (empty($piutangBelumLunas)): ?>
+                    <p class="text-muted mb-0">Belum ada piutang.</p>
+                <?php else: ?>
+                    <ul class="list-unstyled mb-2">
+                        <?php foreach ($piutangBelumLunas as $p): ?>
+                            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <span><?= $p['nama_peminjam'] ?></span>
+                                <span class="text-danger fw-semibold text-nowrap">
+                                    Rp <?= number_format($p['sisa_hutang'], 0, ',', '.') ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php if ($piutangTotal > 5): ?>
+                        <a href="<?= base_url('piutang') ?>" class="small">Lihat semua (<?= $piutangTotal ?>) →</a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>

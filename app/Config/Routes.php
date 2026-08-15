@@ -44,4 +44,24 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/piutang/detail/(:num)', 'Piutang::detail/$1');
     // Tambahkan route lain yang memerlukan autentikasi di sini
 });
+
+//  ROUTES REST API (Aplikasi Mobile)
+
+$routes->group('api', function ($routes) {
+
+    // Public Route (Tanpa Token JWT)
+    $routes->post('login', 'Api\AuthApi::login');
+
+    // Protected Route (Wajib Pakai Token JWT)
+    $routes->group('', ['filter' => 'jwt'], function ($routes) {
+        $routes->get('api/dashboard', 'Api\DashboardApi::index');
+        $routes->get('api/transaksi', 'Api\TransaksiApi::index');
+        $routes->post('api/transaksi', 'Api\TransaksiApi::simpan');
+        $routes->get('api/transaksi/(:num)', 'Api\TransaksiApi::edit/$1');
+        $routes->put('api/transaksi/(:num)', 'Api\TransaksiApi::update/$1');
+        $routes->delete('api/transaksi/(:num)', 'Api\TransaksiApi::hapus/$1');
+        
+    });
+
+});
 ?>

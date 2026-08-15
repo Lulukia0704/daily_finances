@@ -51,7 +51,7 @@
                 </form>
                 <div class="text-center mt-3">
                     <span class="text-muted" style="font-size:13px">Atau </span>
-                    <a href="/daily_finances/public/login" class="auth-link">Masuk</a>
+                    <a href="<?= base_url('login') ?>" class="auth-link">Masuk</a>
                 </div>
 
             </div>

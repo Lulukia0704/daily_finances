@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <!-- HEADER -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <h4 class="mb-0 fw-bold" style="color:#229799">Piutang</h4>
     <button class="btn btn-auth" data-bs-toggle="modal" data-bs-target="#modalTambah">
         <i class="bi bi-plus-lg me-1"></i> Tambah Piutang
@@ -26,8 +26,8 @@
 <!-- FILTER & SEARCH -->
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-2">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
+       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex flex-wrap gap-1">
                 <button class="btn btn-sm filter-btn <?= !$filter ? 'active' : '' ?>"
                         onclick="window.location='<?= base_url('piutang') ?>'">Semua</button>
                 <button class="btn btn-sm filter-btn <?= $filter == 'belum' ? 'active' : '' ?>"
@@ -38,7 +38,7 @@
             <form method="get" action="<?= base_url('piutang') ?>" class="d-flex gap-2">
                 <input type="hidden" name="filter" value="<?= $filter ?>">
                 <input type="text" name="search" class="form-control form-control-sm"
-                       placeholder="Cari nama peminjam..." value="<?= $search ?>">
+                    placeholder="Cari nama peminjam..." value="<?= $search ?>">
                 <button type="submit" class="btn btn-sm btn-auth">Cari</button>
             </form>
         </div>
@@ -47,7 +47,7 @@
 
 <!-- TABEL -->
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>

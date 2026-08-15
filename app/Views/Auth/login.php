@@ -55,7 +55,7 @@
 
                 <div class="text-center mt-3">
                     <span class="text-muted" style="font-size:13px">Atau </span>
-                    <a href="/daily_finances/public/register" class="auth-link">Daftar</a>
+                    <a href="<?= base_url('register') ?>" class="auth-link">Daftar</a>
                 </div>
 
                 <div class="text-center mt-2">

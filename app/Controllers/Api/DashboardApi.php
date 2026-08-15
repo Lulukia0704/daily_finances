@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Api; // 🔄 BERBEDA: namespace Api
 
-use App\Models\PiutangModel;
-use App\Models\TargetModel;
+use App\Controllers\BaseController;
 
-class Dashboard extends BaseController
+class DashboardApi extends BaseController
 {
-    public function index(): string
+    public function index()  // 🔄 BERBEDA: hapus ': string' karena return JSON bukan string HTML
     {
-        $user_id = session()->get('user_id');
+        $user_id = $this->request->user_id; // 🔄 BERBEDA: ambil dari JWT token, bukan session()->get()
         $db = \Config\Database::connect();
 
-        // Saldo keseluruhan (semua waktu)
+        // Saldo keseluruhan — SAMA
         $saldoQuery = $db->table('transaksi')
             ->select("
                 SUM(CASE WHEN tipe = 'Pemasukan' THEN jumlah ELSE 0 END) as total_masuk,
@@ -24,7 +23,7 @@ class Dashboard extends BaseController
 
         $saldo = ($saldoQuery['total_masuk'] ?? 0) - ($saldoQuery['total_keluar'] ?? 0);
 
-        // Pemasukan & Pengeluaran BULAN INI
+        // Pemasukan & Pengeluaran bulan ini — SAMA
         $bulanIni = $db->table('transaksi')
             ->select("
                 SUM(CASE WHEN tipe = 'Pemasukan' THEN jumlah ELSE 0 END) as pemasukan,
@@ -35,9 +34,9 @@ class Dashboard extends BaseController
             ->where('YEAR(tanggal)', date('Y'))
             ->get()
             ->getRowArray();
-            
-    // Bar Chart - Pengeluaran per Kategori bulan ini
-            $barChart = $db->table('transaksi t')
+
+        // Bar Chart — SAMA
+        $barChart = $db->table('transaksi t')
             ->select('k.nama as kategori, SUM(t.jumlah) as total')
             ->join('kategori k', 'k.id = t.kategori_id')
             ->where('t.user_id', $user_id)
@@ -49,8 +48,8 @@ class Dashboard extends BaseController
             ->get()
             ->getResultArray();
 
-            // Pie Chart - Komposisi Kebutuhan vs Keinginan bulan ini
-            $pieChart = $db->table('transaksi t')
+        // Pie Chart — SAMA
+        $pieChart = $db->table('transaksi t')
             ->select('k.jenis, SUM(t.jumlah) as total')
             ->join('kategori k', 'k.id = t.kategori_id')
             ->where('t.user_id', $user_id)
@@ -61,8 +60,8 @@ class Dashboard extends BaseController
             ->get()
             ->getResultArray();
 
-        // Time Series - default 7 hari terakhir
-        $periode = $this->request->getGet('periode') ?? 'bulanan';
+        // Time Series
+        $periode = $this->request->getGet('periode') ?? 'bulanan'; // 🔄 BERBEDA: Flutter kirim via query param
 
         if ($periode == '7hari') {
             $timeSeriesRaw = $db->table('transaksi')
@@ -93,58 +92,21 @@ class Dashboard extends BaseController
                 ->groupBy('YEAR(tanggal)')
                 ->orderBy('YEAR(tanggal)', 'ASC')
                 ->get()->getResultArray();
-        }    
+        }
 
-        // Piutang belum lunas — urutkan dari tanggal pinjam paling lama
-        $piutangModel = new PiutangModel();
-        $piutangList = $piutangModel->getPiutangByUser($user_id);
-        $piutangBelumLunas = array_filter($piutangList, fn($p) => $p['sisa_hutang'] > 0);
-        usort($piutangBelumLunas, fn($a, $b) => strtotime($a['tanggal_pinjam']) <=> strtotime($b['tanggal_pinjam']));
-        $piutangTotal = count($piutangBelumLunas);
-        $piutangBelumLunas = array_slice($piutangBelumLunas, 0, 5);
-
-        // Target belum tercapai — urutkan: terlambat dulu, lalu segera (<30 hari), lalu terdekat
-        $targetModel = new TargetModel();
-        $targetList = $targetModel->getTargetByUser($user_id);
-        $targetBelumTercapai = array_filter($targetList, fn($t) => $t['sudah_terkumpul'] < $t['target_nominal']);
-
-        $today = strtotime(date('Y-m-d'));
-        usort($targetBelumTercapai, function ($a, $b) use ($today) {
-            $aTime = !empty($a['target_selesai']) ? strtotime($a['target_selesai']) : PHP_INT_MAX;
-            $bTime = !empty($b['target_selesai']) ? strtotime($b['target_selesai']) : PHP_INT_MAX;
-
-            $aOverdue = $aTime < $today;
-            $bOverdue = $bTime < $today;
-
-            // Terlambat selalu di atas
-            if ($aOverdue !== $bOverdue) {
-                return $aOverdue ? -1 : 1;
-            }
-
-            // Kalau sama-sama terlambat atau sama-sama belum, urutkan dari deadline terdekat
-            return $aTime <=> $bTime;
-        });
-        $targetTotal = count($targetBelumTercapai);
-        $targetBelumTercapai = array_slice($targetBelumTercapai, 0, 5);
-
-        $data = [
-            'title'       => 'Dashboard',
-            'activeMenu'  => 'dashboard',
-            'saldo'       => $saldo,
-            'pemasukan'   => $bulanIni['pemasukan'] ?? 0,
-            'pengeluaran' => $bulanIni['pengeluaran'] ?? 0,
-            'barChart'    => $barChart,
-            'pieChart'    => $pieChart,
-            'timeSeries'  => $timeSeriesRaw,
-            'periode'     => $periode,
-            'piutangBelumLunas' => $piutangBelumLunas,
-            'piutangTotal' => $piutangTotal,
-            'targetBelumTercapai' => $targetBelumTercapai,
-            'targetTotal' => $targetTotal,
-        ];
-
-        
-
-        return view('dashboard/index', $data);
+        // 🔄 BERBEDA: return JSON bukan view() + $data array tidak ada title/activeMenu
+        return $this->response->setJSON([
+            'status'  => true,
+            'message' => 'Data dashboard berhasil diambil!',
+            'data'    => [
+                'saldo'       => (int) $saldo,
+                'pemasukan'   => (int) ($bulanIni['pemasukan'] ?? 0),
+                'pengeluaran' => (int) ($bulanIni['pengeluaran'] ?? 0),
+                'bar_chart'   => $barChart,
+                'pie_chart'   => $pieChart,
+                'time_series' => $timeSeriesRaw,
+                'periode'     => $periode,
+            ]
+        ])->setStatusCode(200);
     }
 }

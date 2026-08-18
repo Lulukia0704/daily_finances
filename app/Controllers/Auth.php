@@ -1,71 +1,104 @@
-<?php 
+<?php
 
 namespace App\Controllers;
 
+use League\OAuth2\Client\Provider\Google;
+
 class Auth extends BaseController
 {
+    protected function googleProvider(): Google
+    {
+        return new Google([
+            'clientId'     => env('GOOGLE_CLIENT_ID'),
+            'clientSecret' => env('GOOGLE_CLIENT_SECRET'),
+            'redirectUri'  => env('GOOGLE_REDIRECT_URI'),
+        ]);
+    }
+
     public function login()
     {
         return view('auth/login');
     }
-    public function register()
+
+    public function google()
     {
-        return view('auth/register');
-    }
-    public function prosesRegister()
-    {
-        // Ambil data dari form
-        $nama     = $this->request->getPost('nama');
-        $email    = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
-        $konfirmasi = $this->request->getPost('konfirmasi');
+        $provider = $this->googleProvider();
 
-        // Cek password sama dengan konfirmasi
-        if ($password !== $konfirmasi) {
-            return redirect()->back()->with('error', 'Kata sandi tidak cocok!');
-        }
-
-        // Simpan ke database
-        $userModel = new \App\Models\UserModel();
-        $userModel->save([
-            'nama'     => $nama,
-            'email'    => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
-        ]);
-        
-        return redirect()->to(base_url('login'))->with('sukses', 'Akun berhasil dibuat! Silakan masuk.');
-    }
-    public function prosesLogin()
-    {
-        // Ambil data dari form
-        $email    = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
-        // Cek di database
-        $userModel = new \App\Models\UserModel();
-        $user = $userModel->where('email', $email)->first();
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'Email tidak terdaftar!');
-        }
-
-        if (!password_verify($password, $user['password'])) {
-            return redirect()->back()->with('error', 'kata sandi salah!');
-        }
-
-        // Simpan session
-        session()->set([
-            'user_id' => $user['id'],
-            'user_nama' => $user['nama'],
-            'user_email' => $user['email'],
-            'logged_in' => true
+        $authUrl = $provider->getAuthorizationUrl([
+            'prompt' => 'select_account',
         ]);
 
-        return redirect()->to(base_url('dashboard'));
+        session()->set('oauth2state', $provider->getState());
+
+        return redirect()->to($authUrl);
     }
+
+    public function googleCallback()
+    {
+        $provider = $this->googleProvider();
+
+        $state = $this->request->getGet('state');
+
+        if (!$state || $state !== session()->get('oauth2state')) {
+            session()->remove('oauth2state');
+            return redirect()->to(base_url('login'))->with('error', 'Sesi login tidak valid, silakan coba lagi.');
+        }
+        session()->remove('oauth2state');
+
+        if ($this->request->getGet('error')) {
+            return redirect()->to(base_url('login'))->with('error', 'Login dengan Google dibatalkan.');
+        }
+
+        try {
+            $token = $provider->getAccessToken('authorization_code', [
+                'code' => $this->request->getGet('code'),
+            ]);
+
+            $googleUser = $provider->getResourceOwner($token);
+            $data = $googleUser->toArray();
+
+            $userModel = new \App\Models\UserModel();
+
+            $user = $userModel->where('google_id', $data['sub'])->first();
+
+            if (!$user) {
+                $user = $userModel->where('email', $data['email'])->first();
+            }
+
+            if ($user) {
+                $userModel->update($user['id'], [
+                    'google_id' => $data['sub'],
+                    'foto'      => $data['picture'] ?? null,
+                ]);
+            } else {
+                $userId = $userModel->insert([
+                    'nama'      => $data['name'],
+                    'email'     => $data['email'],
+                    'google_id' => $data['sub'],
+                    'foto'      => $data['picture'] ?? null,
+                    'password'  => null,
+                ]);
+                $user = $userModel->find($userId);
+            }
+
+            session()->set([
+                'user_id'    => $user['id'],
+                'user_nama'  => $user['nama'],
+                'user_email' => $user['email'],
+                'logged_in'  => true,
+            ]);
+
+            return redirect()->to(base_url('dashboard'));
+
+        } catch (\Exception $e) {
+            log_message('error', 'Google login error: ' . $e->getMessage());
+            return redirect()->to(base_url('login'))->with('error', 'Login dengan Google gagal, silakan coba lagi.');
+        }
+    }
+
     public function logout()
     {
         session()->destroy();
         return redirect()->to(base_url('login'))->with('sukses', 'Berhasil keluar!');
     }
 }
- ?>

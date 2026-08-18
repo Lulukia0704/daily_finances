@@ -34,32 +34,12 @@
                     </div>
                 <?php endif; ?>
 
-                <!-- {{-- FORM --}} -->
-                <form action="<?= base_url('login')?>" method="post">
-
-                <?=csrf_field()?>
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="contoh@email.com">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Kata sandi</label>
-                    <input type="password" name="password" class="form-control" placeholder="Password">
-                </div>
-
-                <button class="btn btn-auth w-100 mt-2">Masuk</button>
-                
-                </form>
-
-                <div class="text-center mt-3">
-                    <span class="text-muted" style="font-size:13px">Atau </span>
-                    <a href="<?= base_url('register') ?>" class="auth-link">Daftar</a>
-                </div>
-
-                <div class="text-center mt-2">
-                    <a href="#" class="auth-link">Lupa Kata sandi?</a>
+                <!-- {{-- LOGIN GOOGLE --}} -->
+                <div class="d-grid mb-3">
+                    <a href="<?= base_url('auth/google') ?>" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2">
+                        <img src="https://www.google.com/favicon.ico" width="18" height="18" alt="Google">
+                        Masuk dengan Google
+                    </a>
                 </div>
 
             </div>

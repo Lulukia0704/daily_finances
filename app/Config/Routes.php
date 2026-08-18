@@ -5,9 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 
 $routes->get('/login','Auth::login');
-$routes->get('/register','Auth::register');
-$routes->post('/register','Auth::prosesRegister');
-$routes->post('/login','Auth::prosesLogin');
+$routes->get('/auth/google', 'Auth::google');
+$routes->get('/auth/google/callback', 'Auth::googleCallback');
+// $routes->get('/register','Auth::register');
+// $routes->post('/register','Auth::prosesRegister');
+// $routes->post('/login','Auth::prosesLogin');
 
 // Route dgn filter auth (hrs login)
 $routes->group('', ['filter' => 'auth'], function($routes) {

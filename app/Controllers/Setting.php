@@ -32,7 +32,7 @@ class Setting extends BaseController
         $db = \Config\Database::connect();
         $db->table('users')->where('id', $user_id)->update(['nama' => $nama]);
 
-        session()->set('nama', $nama);
+        session()->set('user_nama', $nama);
 
         return redirect()->to(base_url('setting'))->with('sukses', 'Nama berhasil diubah!');
     }

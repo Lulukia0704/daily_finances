@@ -14,7 +14,9 @@ class UserModel extends Model
     protected $allowedFields = [
         'nama',
         'email',
-        'password'
+        'password',
+        'google_id',
+        'foto',
     ];
 }
 ?>

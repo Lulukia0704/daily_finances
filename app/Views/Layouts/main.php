@@ -1,266 +1,359 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Daily Finances — <?= $title ?? 'Dashboard' ?></title>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
-    
+
     <style>
-        /* Tombol hamburger melayang di pojok kiri atas (HANYA muncul di HP/Tablet) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            /* Background dasar aplikasi yang lembut */
+        }
+
+        /* --------------------------------------------------
+        SIDEBAR DESKTOP MODERN
+        ----------------------------------------------------- */
+        .sidebar {
+            background-color: #229799;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+            z-index: 1020;
+        }
+
+        .sidebar-logo h5 {
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            border-radius: 8px;
+            margin: 2px 10px 4px 10px;
+            /* Spasi sedikit dari tepi agar menyerupai tombol */
+            padding: 12px 16px;
+            font-size: 14.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        /* Hover Effect Desktop */
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+            transform: translateX(4px);
+        }
+
+        /* Active Effect Desktop */
+        .nav-link.active {
+            background-color: #ffffff !important;
+            color: #229799 !important;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.active i {
+            transform: scale(1.1);
+            /* Ikon sedikit membesar jika aktif */
+        }
+
+        /* Konten utama di sebelah kanan */
+        .main-content {
+            padding: 30px 40px;
+            min-height: 100vh;
+        }
+
+        /* --------------------------------------------------
+        TOMBOL HAMBURGER MOBILE
+        ----------------------------------------------------- */
         .hamburger-trigger {
             position: fixed;
-            top: 12px;
-            left: 12px;
-            z-index: 1050; 
-            background-color: #229799; 
-            color: white;
-            border: none;
-            border-radius: 8px;
+            top: 15px;
+            left: 15px;
+            z-index: 1050;
+            background-color: #ffffff;
+            color: #229799;
+            border: 1px solid rgba(34, 151, 153, 0.2);
+            border-radius: 10px;
             padding: 8px 12px;
-            display: none; /* Sembunyikan di monitor besar */
-            box-shadow: 0 4px 12px rgba(34, 151, 153, 0.3);
+            display: none;
+            /* Sembunyikan di PC */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.2s ease;
         }
 
         .hamburger-trigger:hover {
-            background-color: #1b7a7c;
+            background-color: #f1f1f1;
+            transform: translateY(-2px);
         }
 
         /* --------------------------------------------------
-        STYLE OFFCANVAS (MENCONTEK 100% STYLE ASLIMU)
+        OFFCANVAS MOBILE SIDEBAR
         ----------------------------------------------------- */
         .mobile-sidebar-bg {
-            background-color: #229799 !important; /* Warna hijau toska aslimu */
-            border: none !important;
-            width: 280px; /* Default lebar laci */
+            background-color: #229799 !important;
+            border-right: none !important;
+            width: 280px;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
         }
 
-        /* Styling Link di dalam Offcanvas */
-        .mobile-sidebar-bg .nav-link {
-            color: rgba(255, 255, 255, 0.8) !important;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            padding: 10px 12px;
-            font-size: 14px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
+        .mobile-sidebar-bg .btn-close-white {
+            opacity: 0.8;
         }
 
-        /* Efek Hover */
-        .mobile-sidebar-bg .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.15) !important;
-            color: white !important;
-        }
-
-        /* Efek Menu Aktif */
-        .mobile-sidebar-bg .nav-link.active {
-            background-color: white !important;
-            color: #229799 !important;
-            font-weight: 600;
+        .mobile-sidebar-bg .btn-close-white:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+            transition: transform 0.3s ease;
         }
 
         /* --------------------------------------------------
-        MEDIA QUERY UNTUK TABLET (max-width: 991.98px)
+        MEDIA QUERIES
         ----------------------------------------------------- */
+        /* TABLET */
         @media (max-width: 991.98px) {
-            /* Ukuran font menu sidebar sedikit mengecil di Tablet */
-            .mobile-sidebar-bg .nav-link {
-                font-size: 13px !important;
+            .nav-link {
+                font-size: 13.5px;
+                padding: 10px 14px;
             }
-            /* Ukuran judul logo di Tablet */
-            .mobile-sidebar-bg #mobileSidebarLabel {
-                font-size: 1rem !important; 
+
+            .sidebar-logo h5 {
+                font-size: 1.1rem !important;
+            }
+
+            .main-content {
+                padding: 25px 20px;
             }
         }
 
-        /* --------------------------------------------------
-        MEDIA QUERY UNTUK HP / MOBILE (max-width: 767.98px)
-        ----------------------------------------------------- */
+        /* MOBILE / HP */
         @media (max-width: 767.98px) {
-            /* Munculkan tombol hamburger */
             .hamburger-trigger {
                 display: block;
             }
-            .hamburger-trigger i {
-                font-size: 1.2rem !important;
-            }
 
-            /* Sembunyikan sidebar desktop */
             .sidebar {
                 display: none !important;
             }
 
-            /* Reset margin kiri konten utama di HP */
             .main-content {
-                margin-left: 0 !important;
-                padding-top: 65px !important; 
-                padding-left: 12px !important;
-                padding-right: 12px !important;
+                padding-top: 75px !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+                padding-bottom: 30px !important;
             }
 
-            /* Lebar laci menu disisakan 20% ruang kosong di kanan agar tidak full layar */
             .mobile-sidebar-bg {
-                width: 70% !important; 
-                max-width: 300px;      
+                width: 75% !important;
+                max-width: 320px;
             }
 
-            /* Beri jarak kiri di header agar tulisan tidak ditumpuk tombol hamburger melayang */
             .mobile-sidebar-bg .offcanvas-header {
-                padding-left: 65px !important; 
+                padding-left: 20px !important;
             }
 
-            /* 🎯 FONT RESPONSIVE KHUSUS MOBILE (Mencegah teks kepotong) */
             .mobile-sidebar-bg #mobileSidebarLabel {
-                font-size: 0.9rem !important; /* Ukuran pas untuk layar HP kecil */
-                letter-spacing: 0.3px;
-                white-space: nowrap; /* Memaksa teks tetap satu baris horizontal */
+                font-size: 1rem !important;
+                letter-spacing: 0.5px;
             }
 
             .mobile-sidebar-bg .user-greeting {
-                font-size: 0.78rem !important; /* Teks "Hi, user" ikut mengecil secara proporsional */
+                font-size: 0.85rem !important;
             }
 
             .mobile-sidebar-bg .nav-link {
-                font-size: 12.5px !important; /* Font menu sedikit lebih rapat & manis di HP */
-                padding: 8px 10px;
+                margin: 2px 15px 4px 15px;
+                /* Margin menu mobile */
             }
         }
     </style>
 </head>
+
 <body>
 
-<!-- TOMBOL HAMBURGER MELAYANG (Otomatis hilang di desktop) -->
-<button class="hamburger-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
-    <i class="bi bi-list"></i>
-</button>
+    <!-- TOMBOL HAMBURGER MELAYANG (Khusus Mobile) -->
+    <button class="hamburger-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"
+        aria-controls="mobileSidebar">
+        <i class="bi bi-list fs-5"></i>
+    </button>
 
-<div class="container-fluid">
-    <div class="row">
+    <div class="container-fluid overflow-hidden p-0">
+        <div class="row g-0 flex-nowrap">
 
-        <!-- SIDEBAR UTAMA (Desktop) -->
-        <div class="col-md-2 sidebar px-0">
-            
-            <!-- Logo -->
-            <div class="sidebar-logo text-center py-4">
-                <h5 class="text-white fw-bold mb-0">DAILY</h5>
-                <h5 class="text-white fw-bold">FINANCES</h5>
-                <hr class="border-secondary">
-                <p class="text-white mb-0" style="font-size: 17px">
-                Hi, <?= session()->get('user_nama')?>!</p>
+            <!-- SIDEBAR UTAMA (Desktop) -->
+            <div class="col-auto col-md-3 col-xl-2 sidebar">
+
+                <!-- Logo & Greeting -->
+                <div class="sidebar-logo text-center py-4 mt-2">
+                    <div class="bg-white text-center d-inline-flex align-items-center justify-content-center rounded-3 mb-3 shadow-sm"
+                        style="width: 50px; height: 50px; color: #229799;">
+                        <i class="bi bi-wallet2 fs-3"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-0">DAILY</h5>
+                    <h5 class="text-white fw-bold">FINANCES</h5>
+                    <div class="px-4 mt-3">
+                        <hr class="border-light opacity-25">
+                    </div>
+                    <p class="text-white-50 mb-0 fw-medium small">Welcome back,</p>
+                    <p class="text-white fw-semibold mb-0 fs-6"><?= session()->get('user_nama') ?></p>
+                </div>
+
+                <!-- Menu Navigation -->
+                <nav class="nav flex-column flex-grow-1 overflow-auto mt-2 w-100">
+                    <a href="<?= base_url('dashboard') ?>"
+                        class="nav-link <?= $activeMenu == 'dashboard' ? 'active' : '' ?>">
+                        <i class="bi bi-grid-1x2-fill me-3"></i> Dashboard
+                    </a>
+                    <a href="<?= base_url('transaksi') ?>"
+                        class="nav-link <?= $activeMenu == 'transaksi' ? 'active' : '' ?>">
+                        <i class="bi bi-journal-text me-3"></i> Transaksi
+                    </a>
+                    <a href="<?= base_url('kategori') ?>"
+                        class="nav-link <?= $activeMenu == 'kategori' ? 'active' : '' ?>">
+                        <i class="bi bi-tags-fill me-3"></i> Kategori
+                    </a>
+                    <a href="<?= base_url('rekap') ?>" class="nav-link <?= $activeMenu == 'rekap' ? 'active' : '' ?>">
+                        <i class="bi bi-calendar3 me-3"></i> Rekap Bulanan
+                    </a>
+                    <a href="<?= base_url('target') ?>" class="nav-link <?= $activeMenu == 'target' ? 'active' : '' ?>">
+                        <i class="bi bi-bullseye me-3"></i> Target Goal
+                    </a>
+                    <a href="<?= base_url('piutang') ?>"
+                        class="nav-link <?= $activeMenu == 'piutang' ? 'active' : '' ?>">
+                        <i class="bi bi-people-fill me-3"></i> Buku Piutang
+                    </a>
+                </nav>
+
+                <!-- Bottom Menu -->
+                <div class="sidebar-bottom w-100 pb-4 pt-2">
+                    <div class="px-4">
+                        <hr class="border-light opacity-25">
+                    </div>
+                    <a href="<?= base_url('setting') ?>"
+                        class="nav-link <?= $activeMenu == 'setting' ? 'active' : '' ?>">
+                        <i class="bi bi-gear-fill me-3"></i> Pengaturan
+                    </a>
+                    <a href="#" class="nav-link text-white mt-1 hover-logout"
+                        style="background-color: rgba(255, 0, 0, 0.15);" data-bs-toggle="modal"
+                        data-bs-target="#modalLogout">
+                        <i class="bi bi-box-arrow-left me-3 text-white"></i> Keluar Akun
+                    </a>
+                </div>
+
             </div>
 
-            <!-- Menu -->
-            <nav class="nav flex-column px-3">
-                <a href="<?= base_url('dashboard') ?>" class="nav-link <?= $activeMenu == 'dashboard' ? 'active' : '' ?>">
-                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            <!-- KONTEN UTAMA (View Pages) -->
+            <div class="col main-content overflow-auto" style="height: 100vh;">
+                <?= $this->renderSection('content') ?>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SIDEBAR OFFCANVAS (Laci Menu HP) -->
+    <div class="offcanvas offcanvas-start mobile-sidebar-bg" tabindex="-1" id="mobileSidebar"
+        aria-labelledby="mobileSidebarLabel">
+        <div class="offcanvas-header align-items-center py-4 px-4 border-bottom border-light border-opacity-10">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-white d-flex align-items-center justify-content-center rounded-3 shadow-sm"
+                    style="width: 45px; height: 45px; color: #229799;">
+                    <i class="bi bi-wallet2 fs-4"></i>
+                </div>
+                <div>
+                    <h6 class="text-white fw-bold mb-0" id="mobileSidebarLabel">DAILY FINANCES</h6>
+                    <small class="text-white-50 user-greeting">Hi, <?= session()->get('user_nama') ?></small>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
+
+            <!-- Menu List -->
+            <nav class="nav flex-column mt-3">
+                <a href="<?= base_url('dashboard') ?>"
+                    class="nav-link <?= $activeMenu == 'dashboard' ? 'active' : '' ?>">
+                    <i class="bi bi-grid-1x2-fill me-3"></i> Dashboard
                 </a>
-                <a href="<?= base_url('transaksi') ?>" class="nav-link <?= $activeMenu == 'transaksi' ? 'active' : '' ?>">
-                    <i class="bi bi-journal-text me-2"></i> Transaksi
+                <a href="<?= base_url('transaksi') ?>"
+                    class="nav-link <?= $activeMenu == 'transaksi' ? 'active' : '' ?>">
+                    <i class="bi bi-journal-text me-3"></i> Transaksi
                 </a>
                 <a href="<?= base_url('kategori') ?>" class="nav-link <?= $activeMenu == 'kategori' ? 'active' : '' ?>">
-                    <i class="bi bi-tags me-2"></i> Kategori
+                    <i class="bi bi-tags-fill me-3"></i> Kategori
                 </a>
                 <a href="<?= base_url('rekap') ?>" class="nav-link <?= $activeMenu == 'rekap' ? 'active' : '' ?>">
-                    <i class="bi bi-calendar3 me-2"></i> Rekap Bulanan
+                    <i class="bi bi-calendar3 me-3"></i> Rekap Bulanan
                 </a>
                 <a href="<?= base_url('target') ?>" class="nav-link <?= $activeMenu == 'target' ? 'active' : '' ?>">
-                    <i class="bi bi-bullseye me-2"></i> Target
+                    <i class="bi bi-bullseye me-3"></i> Target Goal
                 </a>
                 <a href="<?= base_url('piutang') ?>" class="nav-link <?= $activeMenu == 'piutang' ? 'active' : '' ?>">
-                    <i class="bi bi-people me-2"></i> Piutang
+                    <i class="bi bi-people-fill me-3"></i> Buku Piutang
                 </a>
             </nav>
 
             <!-- Bottom Menu -->
-            <div class="sidebar-bottom px-3">
-                <hr class="border-secondary">
+            <div class="mb-4 mt-auto">
+                <div class="px-4">
+                    <hr class="border-light opacity-25">
+                </div>
                 <a href="<?= base_url('setting') ?>" class="nav-link <?= $activeMenu == 'setting' ? 'active' : '' ?>">
-                    <i class="bi bi-gear me-2"></i> Setting
+                    <i class="bi bi-gear-fill me-3"></i> Pengaturan
                 </a>
-                <a href="#" class="nav-link text-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
-                    <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                <a href="#" class="nav-link text-white mt-2" style="background-color: rgba(255, 0, 0, 0.2);"
+                    data-bs-toggle="modal" data-bs-target="#modalLogout" data-bs-dismiss="offcanvas">
+                    <i class="bi bi-box-arrow-left me-3"></i> Keluar Akun
                 </a>
             </div>
-
-        </div>
-
-        <!-- KONTEN UTAMA -->
-        <div class="col-12 col-md-10 main-content">
-            <?= $this->renderSection('content') ?>
-        </div>
-
-    </div>
-</div>
-
-<!-- SIDEBAR OFFCANVAS (Laci Menu HP - 100% Senada dengan Desain Asli & Full Screen di Mobile) -->
-<div class="offcanvas offcanvas-start mobile-sidebar-bg text-white" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
-    <div class="offcanvas-header justify-content-between align-items-center py-4 px-3">
-        <div>
-            <h5 class="text-white fw-bold mb-0" id="mobileSidebarLabel">DAILY FINANCES</h5>
-            <small class="text-white-50 user-greeting">Hi, <?= session()->get('user_nama')?>!</small>
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column justify-content-between px-0 pt-0">
-        
-        <!-- Menu List -->
-        <nav class="nav flex-column px-3">
-            <hr class="border-light opacity-25 mt-0">
-            <a href="<?= base_url('dashboard') ?>" class="nav-link <?= $activeMenu == 'dashboard' ? 'active' : '' ?>">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </a>
-            <a href="<?= base_url('transaksi') ?>" class="nav-link <?= $activeMenu == 'transaksi' ? 'active' : '' ?>">
-                <i class="bi bi-journal-text me-2"></i> Transaksi
-            </a>
-            <a href="<?= base_url('kategori') ?>" class="nav-link <?= $activeMenu == 'kategori' ? 'active' : '' ?>">
-                <i class="bi bi-tags me-2"></i> Kategori
-            </a>
-            <a href="<?= base_url('rekap') ?>" class="nav-link <?= $activeMenu == 'rekap' ? 'active' : '' ?>">
-                <i class="bi bi-calendar3 me-2"></i> Rekap Bulanan
-            </a>
-            <a href="<?= base_url('target') ?>" class="nav-link <?= $activeMenu == 'target' ? 'active' : '' ?>">
-                <i class="bi bi-bullseye me-2"></i> Target
-            </a>
-            <a href="<?= base_url('piutang') ?>" class="nav-link <?= $activeMenu == 'piutang' ? 'active' : '' ?>">
-                <i class="bi bi-people me-2"></i> Piutang
-            </a>
-        </nav>
-
-        <!-- Bottom Menu -->
-        <div class="px-3 mb-4">
-            <hr class="border-light opacity-25">
-            <a href="<?= base_url('setting') ?>" class="nav-link <?= $activeMenu == 'setting' ? 'active' : '' ?>">
-                <i class="bi bi-gear me-2"></i> Setting
-            </a>
-            <a href="#" class="nav-link text-white bg-danger bg-opacity-25" data-bs-toggle="modal" data-bs-target="#modalLogout" data-bs-dismiss="offcanvas">
-                <i class="bi bi-box-arrow-right me-2"></i> Keluar
-            </a>
         </div>
     </div>
-</div>
 
-<!-- MODAL LOGOUT -->
-<div class="modal fade" id="modalLogout" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center py-4">
-                <i class="bi bi-box-arrow-right text-danger fs-1"></i>
-                <h5 class="mt-3">Yakin ingin keluar?</h5>
-                <p class="text-muted">Kamu harus login lagi untuk masuk ke aplikasi.</p>
-                <div class="d-flex gap-2 justify-content-center mt-3">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <a href="<?= base_url('logout') ?>" class="btn btn-danger">Ya, Keluar</a>
+    <!-- MODAL LOGOUT ELEGAN -->
+    <div class="modal fade" id="modalLogout" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-body text-center p-4 p-md-5">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 rounded-circle mb-4"
+                        style="width: 80px; height: 80px;">
+                        <i class="bi bi-box-arrow-right text-danger fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark">Akhiri Sesi?</h5>
+                    <p class="text-secondary small mb-4">Anda harus login kembali untuk masuk ke dashboard finansial
+                        Anda.</p>
+
+                    <div class="d-flex flex-column gap-2">
+                        <a href="<?= base_url('logout') ?>" class="btn btn-danger rounded-pill fw-semibold py-2">Ya,
+                            Keluar Akun</a>
+                        <button type="button" class="btn btn-light border rounded-pill fw-semibold py-2"
+                            data-bs-dismiss="modal">Batal</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
